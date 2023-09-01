@@ -3,6 +3,7 @@ import 'package:flutter_application_0/pages/login.dart';
 import 'package:flutter_application_0/pages/register.dart';
 import 'package:flutter_application_0/const/route_url.dart';
 import 'package:flutter_application_0/config/colors.dart';
+import 'package:flutter_application_0/pages/todo_entry.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 void main() => runApp(MyApp());
 
@@ -46,7 +47,7 @@ class MyApp extends StatelessWidget {
         //   );
         // }
         return MaterialPageRoute(
-          builder: (context)=>LoginPage(),
+          builder: (context)=>TodoEntryPage(),
           settings: settings,
         );
       },
