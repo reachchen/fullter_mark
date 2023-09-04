@@ -24,7 +24,7 @@ class _TodoListPageState extends State<TodoListPage>{
   @override
   void initState() {
     super.initState();
-    todoList = TodoList(generateTodos(100));
+    todoList = TodoList(generateTodos(30));
   }
 
   @override
@@ -61,6 +61,7 @@ class _TodoListPageState extends State<TodoListPage>{
               });
             },
             onLongPress: (Todo todo) async{
+                print('-------------longPress-------');
                 bool result = await showCupertinoDialog(
                   context: context, 
                   builder: (BuildContext context){
@@ -131,7 +132,7 @@ class TodoItem extends StatelessWidget{
                     children: <Widget>[
                       GestureDetector(
                         onTap: ()=> onFinished(todo),
-                        child: Image.asset(todo.isFinished ? 'assets/images/rec_selected.png'
+                        child: Image.asset(todo.isFinished ? 'assets/images/rect_selected.png'
                         :'assets/images/rect.png',width: 25,height: 25,
                         ),
                       ),

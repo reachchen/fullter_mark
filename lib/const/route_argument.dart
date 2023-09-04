@@ -13,7 +13,7 @@ enum OpenType {
 }
 
 class EditTodoPageArgument {
-  final OpenType openType;
+  OpenType openType = OpenType.Edit;
   final Todo todo;
 
   EditTodoPageArgument({required this.openType, required this.todo});

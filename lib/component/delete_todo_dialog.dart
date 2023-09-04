@@ -35,7 +35,7 @@ class DeleteTodoDialog extends Dialog {
                       child: Column(
                         children: <Widget>[
                           _createTitleWidget(context, todo.title),
-                          _createDescWidget(todo.description),
+                          _createDescWidget('确定删除此条目吗？'),
                         ],
                       ),
                     ),

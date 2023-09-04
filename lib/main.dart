@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_0/pages/edit_todo.dart';
 import 'package:flutter_application_0/pages/login.dart';
 import 'package:flutter_application_0/pages/register.dart';
 import 'package:flutter_application_0/const/route_url.dart';
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
         //   );
         // }
         return MaterialPageRoute(
-          builder: (context)=>TodoEntryPage(),
+          builder: (context)=>EditTodoPage(),
           settings: settings,
         );
       },

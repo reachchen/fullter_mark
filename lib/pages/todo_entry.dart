@@ -25,7 +25,7 @@ class _TodoEntryPageState extends State<TodoEntryPage>{
     pages = <Widget>[
       TodoListPage(),
       CalendarPage(),
-      Container(),
+      TodoEntryPage(),
       ReporterPage(),
       AboutPage(),
     ];
