@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_0/component/dialog.dart';
+import 'package:flutter_application_0/model/login_center.dart';
+import 'package:flutter_application_0/const/route_url.dart';
 import 'package:flutter_application_0/pages/register.dart';
+import 'package:flutter_application_0/pages/todo_entry.dart';
+import 'package:flutter_application_0/model/network_client.dart';
+import 'package:flutter_application_0/utils/network.dart';
 
 class LoginPage extends StatefulWidget{
 
@@ -28,6 +34,45 @@ class _LoginPageState extends State<LoginPage>{
     setState(() {
       canLogin = isInputValid;
     });
+
+   
+  }
+
+  void _Login() async{
+
+    if (await checkConnectivityResult(context) == false) {
+      return;
+    }
+    String email = _emailController.text;
+    String password = _passwordController.text;
+    showDialog(
+      context: context,
+      builder: (buildContext) => ProgressDialog(text: '请求中'),
+    );
+    String result = await NetworkClient.instance().login(email, password);
+    Navigator.of(context).pop();
+    if (result.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => SimpleAlertDialog(
+          title: '服务器返回信息',
+          content: '登录失败，错误信息为：\n$result',
+        ),
+      );
+      return;
+    }
+    // setState(() {
+    //   useHero = false;
+    // });
+    // String currentUserKey = await LoginCenter.instance().login(email);
+    // Navigator.of(context).pushReplacementNamed(
+    //   TODO_ENTRY_PAGE_URL,
+    //   arguments: TodoEntryArgument(currentUserKey),
+    // );
+
+
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=>TodoEntryPage(),),);
+    //  Navigator.of(context).pushReplacementNamed(TODO_ENTRY_PAGE_URL);
   }
 
   @override
@@ -99,7 +144,7 @@ class _LoginPageState extends State<LoginPage>{
                         bottom:12,
                       ),
                       child: FlatButton(
-                        onPressed: canLogin?(){}:null,
+                        onPressed: canLogin? _Login:null,
                         child: Text(
                           '登录',
                           style: TextStyle(
