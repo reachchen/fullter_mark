@@ -14,7 +14,26 @@ enum OpenType {
 
 class EditTodoPageArgument {
   OpenType openType = OpenType.Edit;
-  final Todo todo;
+  final Todo? todo;
 
-  EditTodoPageArgument({required this.openType, required this.todo});
+  EditTodoPageArgument({required this.openType, this.todo});
 }      
+
+class LocationDetailArgument {
+  final Location location;
+
+  LocationDetailArgument(this.location);
+}
+
+class TodoEntryArgument {
+  final String userKey;
+
+  TodoEntryArgument(this.userKey);
+}
+
+class WebViewArgument {
+  final String url;
+  final String title;
+
+  WebViewArgument(this.url, this.title);
+}

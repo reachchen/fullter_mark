@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_0/component/dialog.dart';
+import 'package:flutter_application_0/component/fractionally_sized_trastion.dart';
+import 'package:flutter_application_0/component/image_hero.dart';
+import 'package:flutter_application_0/const/route_argument.dart';
 import 'package:flutter_application_0/model/login_center.dart';
 import 'package:flutter_application_0/const/route_url.dart';
 import 'package:flutter_application_0/pages/register.dart';
@@ -13,17 +16,42 @@ class LoginPage extends StatefulWidget{
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage>{
+class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin{
 
   late bool canLogin;
+  late bool useHero;
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+
+  late Animation<double> _animation;
+  late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
     canLogin = false;
+    useHero = true;
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1000),
+    );
+
+    Animation<double> parentAnimation = CurvedAnimation(
+      parent: _animationController, 
+      curve: Curves.bounceIn,);
+    Tween<double> tween = Tween<double>(begin: 0.4,end:0.5);
+    _animation = tween.animate(parentAnimation);
+    _animationController.forward().then((value) => _animationController.reverse());
+
+
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _animationController.dispose();
   }
 
   void _checkInputValid(String _){
@@ -34,8 +62,11 @@ class _LoginPageState extends State<LoginPage>{
     setState(() {
       canLogin = isInputValid;
     });
+  }
 
-   
+  void _gotoRegister(){
+    Navigator.of(context).pushNamed(REGISTER_PAGE_URL,
+    arguments: RegisterPageArgument('LoginPage', LOGIN_PAGE_URL));
   }
 
   void _Login() async{
@@ -61,22 +92,22 @@ class _LoginPageState extends State<LoginPage>{
       );
       return;
     }
-    // setState(() {
-    //   useHero = false;
-    // });
-    // String currentUserKey = await LoginCenter.instance().login(email);
-    // Navigator.of(context).pushReplacementNamed(
-    //   TODO_ENTRY_PAGE_URL,
-    //   arguments: TodoEntryArgument(currentUserKey),
-    // );
+    setState(() {
+      useHero = false;
+    });
+    String currentUserKey = await LoginCenter.instance().login(email);
+    Navigator.of(context).pushReplacementNamed(
+      TODO_ENTRY_PAGE_URL,
+      arguments: TodoEntryArgument(currentUserKey),
+    );
 
-
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=>TodoEntryPage(),),);
-    //  Navigator.of(context).pushReplacementNamed(TODO_ENTRY_PAGE_URL);
+    // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=>TodoEntryPage(),),);
+  
   }
 
   @override
   Widget build(BuildContext context) {
+    String markAssetName = 'assets/images/mark.png';
     return GestureDetector(
       onTap: (){
         FocusScope.of(context).unfocus();
@@ -84,17 +115,18 @@ class _LoginPageState extends State<LoginPage>{
       child: Scaffold(
         body: SingleChildScrollView(
           child:  ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height,
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height,
           ),
         child: Center(
           child: Column(
             children: <Widget>[
-              Expanded(child: Container(
+              Expanded(
+                child: Container(
                 child: Center(
-                  child: FractionallySizedBox(
-                    child: Image.asset('assets/images/mark.png'),
-                    widthFactor: 0.4,
-                    heightFactor: 0.4,
+                  child: FractionallySizedTransition(
+                    child: useHero ?ImageHero.asset(markAssetName):Image.asset(markAssetName),
+                    factor: _animation,
                   ),
                 ),
               ),

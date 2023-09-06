@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_0/const/route_argument.dart';
+import 'package:flutter_application_0/model/network_client.dart';
 import 'package:flutter_application_0/pages/about.dart';
 import 'package:flutter_application_0/pages/calendar.dart';
 import 'package:flutter_application_0/pages/reporter.dart';
 import 'package:flutter_application_0/pages/todo_list.dart';
 import 'package:flutter_application_0/config/colors.dart';
+import 'package:flutter_application_0/model/todo_list.dart';
+import 'package:flutter_application_0/const/route_url.dart';
+import 'package:flutter_application_0/utils/generate_todo.dart';
 
 class TodoEntryPage extends StatefulWidget{
 
@@ -13,23 +18,23 @@ class TodoEntryPage extends StatefulWidget{
   _TodoEntryPageState createState() => _TodoEntryPageState();
 }
 
-class _TodoEntryPageState extends State<TodoEntryPage>{
+class _TodoEntryPageState extends State<TodoEntryPage> with WidgetsBindingObserver{
 
   late int currentIndex;
   late List<Widget> pages;
+  late TodoList todoList;
+  late String userKey;
+
 
   @override
   void initState() {
     super.initState();
     currentIndex = 0;
-    pages = <Widget>[
-      TodoListPage(),
-      CalendarPage(),
-      Container(),
-      ReporterPage(),
-      AboutPage(),
-    ];
+    WidgetsBinding.instance!.addObserver(this);
+    
   }
+
+  
 
   BottomNavigationBarItem _buildBottomNavigationBarItem(
     String imagePath,
@@ -65,11 +70,63 @@ class _TodoEntryPageState extends State<TodoEntryPage>{
     );
   }
 
-  _onTabChange(int index){
-    setState((){
-      currentIndex = index;
+  _onTabChange(int index) async {
+    if (index == 2) {
+      Future todo = Navigator.of(context).pushNamed(
+        EDIT_TODO_PAGE_URL,
+        arguments: EditTodoPageArgument(
+          openType: OpenType.Add,todo: generateTodos(2).first
+        ),
+      );
+      todo.then((value){
+        index =0;
+        todoList.add(value);
+      });
+      // return;
 
+    //   Navigator.of(context).pushNamed(EDIT_TODO_PAGE_URL,
+    // arguments: EditTodoPageArgument(openType: OpenType.Add,todo: generateTodos(2).first));
+    // return;
+      
+    }
+    setState(() {
+      currentIndex = index;
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    TodoEntryArgument arguments = ModalRoute.of(context)!.settings.arguments as TodoEntryArgument;
+    userKey = arguments.userKey;
+    todoList = TodoList(userKey);
+
+    pages = <Widget>[
+      TodoListPage(todoList: todoList),
+      CalendarPage(),
+      Container(),
+      ReporterPage(),
+      AboutPage(todoList: todoList,userKey: userKey),
+    ];
+
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance!.removeObserver(this);
+    todoList.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      NetworkClient.instance().uploadList(todoList.list, userKey);
+    }
+    if (state == AppLifecycleState.resumed) {
+      todoList.syncWithNetwork();
+    }
+    super.didChangeAppLifecycleState(state);
   }
 
   @override

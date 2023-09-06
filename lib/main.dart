@@ -8,13 +8,17 @@ import 'package:flutter_application_0/const/route_url.dart';
 import 'package:flutter_application_0/config/colors.dart';
 import 'package:flutter_application_0/pages/todo_entry.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_application_0/pages/webview.dart';
+import 'package:flutter_application_0/pages/home.dart';
 void main() => runApp(MyApp());
 
 Map<String, WidgetBuilder> routes = {
+  HOME_PAGE_URL: (context) => HomePage(),
   LOGIN_PAGE_URL: (context) => LoginPage(),
   REGISTER_PAGE_URL: (context) => RegisterPage(),
   TODO_ENTRY_PAGE_URL: (context) => TodoEntryPage(),
-  EDIT_TODO_PAGE_URL: (context) => EditTodoPage()
+  EDIT_TODO_PAGE_URL: (context) =>EditTodoPage(),
+  WEB_VIEW_PAGE_URL: (context) => WebViewPage(),
 };
 
 class MyApp extends StatelessWidget {
@@ -22,6 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: routes,
       theme: ThemeData(
         primaryColor: PRIMARY_COLOR,
         indicatorColor: ACCENT_COLOR,

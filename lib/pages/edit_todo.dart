@@ -7,7 +7,7 @@ import 'package:flutter_application_0/const/route_argument.dart';
 import 'package:flutter_application_0/extension/date_time.dart';
 import 'package:flutter_application_0/extension/time_of_day.dart';
 import 'package:flutter_application_0/model/todo.dart';
-// import 'package:flutter_application_0/utils/generate_todo.dart';
+
 
 const TextStyle _labelTextStyle = TextStyle(
   color: Color(0xFF1D1D26),
@@ -65,6 +65,8 @@ class _EditTodoPageState extends State<EditTodoPage>{
     _dateTextEditingController.text = _todo!.date.toString();
     _startTimeTextEditingController.text = _todo!.startTime.timeString;
     _endTimeTextEditingController.text = _todo!.endTime.timeString;
+    
+    
   }
 
   @override

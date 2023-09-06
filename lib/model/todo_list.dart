@@ -1,10 +1,45 @@
 import 'package:flutter_application_0/model/todo.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_application_0/model/network_client.dart';
+import 'package:flutter_application_0/model/db_provider.dart';
 
-class TodoList {
-  final List<Todo> _todoList;
+enum TodoListChangeType{
 
-  TodoList(this._todoList) {
-    _sort();
+  Delete,
+  Insert,
+  Update,
+
+}
+
+class TodoListChangeInfo{
+  final int insertOrRemoveIndex;
+  final List<Todo> todoList;
+  final TodoListChangeType type;
+  const TodoListChangeInfo({
+    this.todoList = const<Todo>[],
+    this.insertOrRemoveIndex = -1,
+    this.type = TodoListChangeType.Update
+  });
+}
+
+const emptyTodoListChangeInfo = TodoListChangeInfo();
+
+
+class TodoList extends ValueNotifier<TodoListChangeInfo>{
+  List<Todo> _todoList =[];
+  late DbProvider _dbProvider;
+  final String userKey;
+
+
+  TodoList(this.userKey) :super(emptyTodoListChangeInfo){
+    _dbProvider = DbProvider(userKey);
+    // _dbProvider.loadFromDataBase().then((List<Todo> todoList) async {
+    //   if(todoList.isNotEmpty){
+    //     todoList.forEach((e) => add(e));
+    //   }
+    //   syncWithNetwork();
+    // });
+    // _sort();
   }
 
   int get length => _todoList.length;
@@ -13,6 +48,13 @@ class TodoList {
   void add(Todo todo) {
     _todoList.add(todo);
     _sort();
+    int index = _todoList.indexOf(todo);
+    _dbProvider.add(todo);
+    value = TodoListChangeInfo(
+      insertOrRemoveIndex: index,
+      type: TodoListChangeType.Insert,
+      todoList: list,
+    );
   }
 
   void remove(String id) {
@@ -22,11 +64,23 @@ class TodoList {
       return;
     }
     int index = _todoList.indexOf(todo);
+    List<Todo> clonedList = List.from(_todoList);
     _todoList.removeAt(index);
+    _dbProvider.remove(todo);
+    value = TodoListChangeInfo(
+      insertOrRemoveIndex: index,
+      type: TodoListChangeType.Delete,
+      todoList: clonedList,
+    );
   }
 
   void update(Todo todo) {
     _sort();
+    _dbProvider.update(todo);
+    value = TodoListChangeInfo(
+      type: TodoListChangeType.Update,
+      todoList: list,
+    );
   }
 
   Todo? find(String id) {
@@ -67,5 +121,17 @@ class TodoList {
       }
       return a.endTime.hour - b.endTime.hour;
     });
+  }
+
+  Future<void> syncWithNetwork() async{
+    FetchListResult result = await NetworkClient.instance().fetchList(userKey);
+    if(result.error.isEmpty){
+      if(_dbProvider.editTime.isAfter(result.timestamp!)){
+        await NetworkClient.instance().uploadList(list, userKey);
+      }else{
+        List.from(_todoList).forEach((element) => remove(element.id));
+        result.data!.forEach((element) =>add(element));
+      }
+    }
   }
 }
