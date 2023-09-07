@@ -33,8 +33,6 @@ class _EditTodoPageState extends State<EditTodoPage>{
   OpenType?  _openType ;
   Todo? _todo ;
 
-  // OpenType?  _openType = OpenType.Edit;
-  // Todo? _todo = generateTodos(2).first;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late Map<OpenType,_OpenTypeConfig> _openTypeConfigMap;
@@ -48,6 +46,7 @@ class _EditTodoPageState extends State<EditTodoPage>{
   @override
   void initState() {
     super.initState();
+    debugPrint('-------initState-------');
     _openTypeConfigMap = {
       OpenType.Preview:_OpenTypeConfig('查看TODO',Icons.edit,_edit),
       OpenType.Edit:_OpenTypeConfig('编辑TODO',Icons.check,_submit),
@@ -59,9 +58,10 @@ class _EditTodoPageState extends State<EditTodoPage>{
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    debugPrint('-------didChangeDependencies-------');
     EditTodoPageArgument arguments = (ModalRoute.of(context)!.settings.arguments) as EditTodoPageArgument;
     _openType = arguments.openType;
-    _todo = arguments.todo;
+    _todo = arguments.todo?? Todo();
     _dateTextEditingController.text = _todo!.date.toString();
     _startTimeTextEditingController.text = _todo!.startTime.timeString;
     _endTimeTextEditingController.text = _todo!.endTime.timeString;
@@ -72,6 +72,7 @@ class _EditTodoPageState extends State<EditTodoPage>{
   @override
   void dispose() {
     super.dispose();
+    debugPrint('-------dispose-------');
     _dateTextEditingController.dispose();
     _startTimeTextEditingController.dispose();
     _endTimeTextEditingController.dispose();
@@ -79,6 +80,7 @@ class _EditTodoPageState extends State<EditTodoPage>{
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('-------build-------');
     return Scaffold(
       appBar: AppBar(
         title: Text(_openTypeConfigMap[_openType]!.title),
@@ -127,7 +129,7 @@ class _EditTodoPageState extends State<EditTodoPage>{
                 _buildDateFormField(
                   '日期',
                   '请选择日期',
-                  initialValue: _todo!.date,
+                  initialValue: _todo!.date?? DateTime.now(),
                   controller: _dateTextEditingController,
                   onSelect: (value) {
                     _todo!.date = value.dayTime;

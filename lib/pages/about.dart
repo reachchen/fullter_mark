@@ -66,7 +66,7 @@ class AboutPage extends StatelessWidget{
                       ),
                     ),
                     onPressed: () => Navigator.of(context).pushNamed(WEB_VIEW_PAGE_URL,
-                    arguments: WebViewArgument('https://forelax.space/privacy-policy/', '隐私政策',
+                    arguments: WebViewArgument('https://www.jianshu.com/p/08f448b7a8aa', '隐私政策',
                     ),
                   ),
                 ),

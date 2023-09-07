@@ -99,7 +99,7 @@ class Todo {
   String description;
 
   /// 日期
-  DateTime date;
+  DateTime? date;
 
   /// 开始时间
   TimeOfDay startTime;
@@ -120,7 +120,7 @@ class Todo {
   Location location;
 
   String get timeString {
-    String dateString = date.compareTo(DateTime.now()) == 0 ? 'today' : '${date.year}/${date.month}/${date.day}';
+    String dateString = date!.compareTo(DateTime.now()) == 0 ? 'today' : '${date!.year}/${date!.month}/${date!.day}';
     if (startTime == null || endTime == null) {
       return dateString;
     }
@@ -131,7 +131,7 @@ class Todo {
     String? id,
     this.title = "",
     this.description = "",
-    required this.date,
+    this.date,
     this.startTime = const TimeOfDay(hour: 0, minute: 0),
     this.endTime = const TimeOfDay(hour: 0, minute: 0),
     this.priority = Priority.Unspecific, //优先级越小优先级越高
@@ -150,7 +150,7 @@ class Todo {
       ID: id,
       TITLE: title,
       DESCRIPTION: description,
-      DATE: date.millisecondsSinceEpoch.toString(),
+      DATE: date!.millisecondsSinceEpoch.toString(),
       START_TIME: timeOfDayToString(startTime),
       END_TIME: timeOfDayToString(endTime),
       PRIORITY: priority.value,

@@ -8,7 +8,7 @@ import 'package:flutter_application_0/pages/todo_list.dart';
 import 'package:flutter_application_0/config/colors.dart';
 import 'package:flutter_application_0/model/todo_list.dart';
 import 'package:flutter_application_0/const/route_url.dart';
-import 'package:flutter_application_0/utils/generate_todo.dart';
+import 'package:flutter_application_0/model/todo.dart';
 
 class TodoEntryPage extends StatefulWidget{
 
@@ -70,24 +70,41 @@ class _TodoEntryPageState extends State<TodoEntryPage> with WidgetsBindingObserv
     );
   }
 
+  // _onTabChange(int index) async {
+  //   if (index == 2) {
+  //     Future todo =  Navigator.of(context).pushNamed(
+  //       EDIT_TODO_PAGE_URL,
+  //       arguments: EditTodoPageArgument(
+  //         openType: OpenType.Add
+  //       ),
+  //     );
+  //     todo.then((value){
+  //       index =0;
+  //       todoList.add(value);
+  //       setState(() {
+  //         currentIndex =index;
+  //       });
+  //     });
+  //     return;
+  //   }
+  //   setState(() {
+  //     currentIndex = index;
+  //   });
+  // }
+
   _onTabChange(int index) async {
     if (index == 2) {
-      Future todo = Navigator.of(context).pushNamed(
+      var todo = await Navigator.of(context).pushNamed(
         EDIT_TODO_PAGE_URL,
         arguments: EditTodoPageArgument(
-          openType: OpenType.Add,todo: generateTodos(2).first
+          openType: OpenType.Add,
         ),
       );
-      todo.then((value){
-        index =0;
-        todoList.add(value);
-      });
-      // return;
-
-    //   Navigator.of(context).pushNamed(EDIT_TODO_PAGE_URL,
-    // arguments: EditTodoPageArgument(openType: OpenType.Add,todo: generateTodos(2).first));
-    // return;
-      
+      if (todo != null) {
+        index = 0;
+        todoList.add(todo as Todo);
+      }
+      return;
     }
     setState(() {
       currentIndex = index;

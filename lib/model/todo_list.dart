@@ -33,12 +33,12 @@ class TodoList extends ValueNotifier<TodoListChangeInfo>{
 
   TodoList(this.userKey) :super(emptyTodoListChangeInfo){
     _dbProvider = DbProvider(userKey);
-    // _dbProvider.loadFromDataBase().then((List<Todo> todoList) async {
-    //   if(todoList.isNotEmpty){
-    //     todoList.forEach((e) => add(e));
-    //   }
-    //   syncWithNetwork();
-    // });
+    _dbProvider.loadFromDataBase().then((List<Todo> todoList) async {
+      if(todoList.isNotEmpty){
+        todoList.forEach((e) => add(e));
+      }
+      syncWithNetwork();
+    });
     // _sort();
   }
 
@@ -115,7 +115,7 @@ class TodoList extends ValueNotifier<TodoListChangeInfo>{
       if (b.priority.isHigher(a.priority)) {
         return 1;
       }
-      int dateCompareResult = b.date.compareTo(a.date);
+      int dateCompareResult = b.date!.compareTo(a.date!);
       if (dateCompareResult != 0) {
         return dateCompareResult;
       }
@@ -126,7 +126,7 @@ class TodoList extends ValueNotifier<TodoListChangeInfo>{
   Future<void> syncWithNetwork() async{
     FetchListResult result = await NetworkClient.instance().fetchList(userKey);
     if(result.error.isEmpty){
-      if(_dbProvider.editTime.isAfter(result.timestamp!)){
+      if(result.timestamp!.isBefore(_dbProvider.editTime)){
         await NetworkClient.instance().uploadList(list, userKey);
       }else{
         List.from(_todoList).forEach((element) => remove(element.id));

@@ -113,7 +113,7 @@ class FetchListResult {
   final DateTime? timestamp;
   final List<Todo>? data;
 
-  FetchListResult({this.data , this.timestamp, this.error = ''});
+  FetchListResult({this.data ,  this.timestamp, this.error = ''});
 
   factory FetchListResult.fromJson(Map<dynamic, dynamic> json) {
     return FetchListResult(

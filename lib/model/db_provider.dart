@@ -26,8 +26,8 @@ const String EDIT_TIME_KEY = 'todo_list_edit_timestamp';
 class DbProvider {
   DbProvider(this._dbKey);
 
-  late Database _database;
-  late SharedPreferences _sharedPreferences;
+  Database? _database;
+  SharedPreferences? _sharedPreferences;
   String _dbKey;
   DateTime _editTime = DateTime.fromMillisecondsSinceEpoch(0);
   DateTime get editTime => _editTime;
@@ -36,18 +36,18 @@ class DbProvider {
 
   Future<List<Todo>> loadFromDataBase() async {
     await _initDataBase();
-    if (_sharedPreferences.containsKey(editTimeKey)) {
+    if (_sharedPreferences!.containsKey(editTimeKey)) {
       _editTime = DateTime.fromMillisecondsSinceEpoch(
-        _sharedPreferences.getInt(editTimeKey),
+        _sharedPreferences!.getInt(editTimeKey),
       );
     }
-    List<Map<String, dynamic>> dbRecords = await _database.query(TABLE_NAME);
+    List<Map<String, dynamic>> dbRecords = await _database!.query(TABLE_NAME);
     return dbRecords.map((item) => Todo.fromMap(item)).toList();
   }
 
   Future<int> add(Todo todo) async {
     _updateEditTime();
-    return _database.insert(
+    return _database!.insert(
       TABLE_NAME,
       todo.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
@@ -56,7 +56,7 @@ class DbProvider {
 
   Future<int> remove(Todo todo) async {
     _updateEditTime();
-    return _database.delete(
+    return _database!.delete(
       TABLE_NAME,
       where: '$ID = ?',
       whereArgs: [todo.id],
@@ -65,7 +65,7 @@ class DbProvider {
 
   Future<int> update(Todo todo) async {
     _updateEditTime();
-    return _database.update(
+    return _database!.update(
       TABLE_NAME,
       todo.toMap(),
       where: '$ID = ?',
@@ -75,7 +75,7 @@ class DbProvider {
 
   void _updateEditTime() {
     _editTime = DateTime.now();
-    _sharedPreferences.setInt(editTimeKey, _editTime.millisecondsSinceEpoch);
+    _sharedPreferences!.setInt(editTimeKey, _editTime.millisecondsSinceEpoch);
   }
 
   Future<void> _initDataBase() async {

@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      routes: routes,
       theme: ThemeData(
         primaryColor: PRIMARY_COLOR,
         indicatorColor: ACCENT_COLOR,
@@ -41,7 +40,9 @@ class MyApp extends StatelessWidget {
         const Locale('en'),
         const Locale('zh', 'CN'),
       ],
-      initialRoute: '/',
+      routes: routes,
+      // initialRoute: '/',
+      home:HomePage(),
       onGenerateRoute: (RouteSettings settings) {
         if ([REGISTER_PAGE_URL, LOGIN_PAGE_URL].contains(settings.name)) {
           return PageRouteBuilder(
