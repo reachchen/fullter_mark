@@ -7,17 +7,17 @@ typedef OptionChanged = void Function(
 
 class ScrollOptionView extends StatefulWidget {
   final List<String> options;
-  final OptionItemViewBuilder itemBuilder;
-  final OptionItemViewBuilder activeItemBuilder;
-  final OptionChanged onOptionChanged;
+  final OptionItemViewBuilder? itemBuilder;
+  final OptionItemViewBuilder? activeItemBuilder;
+  final OptionChanged? onOptionChanged;
   final int activeIndex;
 
   ScrollOptionView({
     Key? key,
     required this.options,
-    required this.itemBuilder,
-    required this.activeItemBuilder,
-    required this.onOptionChanged,
+    this.itemBuilder,
+    this.activeItemBuilder,
+    this.onOptionChanged,
     this.activeIndex = 0,
   })  : assert(options != null),
         super(key: key);
@@ -43,7 +43,7 @@ class _ScrollOptionViewState extends State<ScrollOptionView> {
     if (oldWidget.activeIndex != widget.activeIndex) {
       _activeIndex = _getSafeActiveIndex(widget.activeIndex);
       if (widget.onOptionChanged != null) {
-        widget.onOptionChanged(context, widget.options[_activeIndex], _activeIndex);
+        widget.onOptionChanged!(context, widget.options[_activeIndex], _activeIndex);
       }
     }
   }
@@ -73,7 +73,7 @@ class _ScrollOptionViewState extends State<ScrollOptionView> {
     Widget content;
     if (_activeIndex == index) {
       if (widget.activeItemBuilder != null) {
-        content = widget.activeItemBuilder(context, option, index);
+        content = widget.activeItemBuilder!(context, option, index);
       } else {
         content = Container(
           alignment: Alignment.center,
@@ -88,7 +88,7 @@ class _ScrollOptionViewState extends State<ScrollOptionView> {
       }
     } else {
       if (widget.itemBuilder != null) {
-        content = widget.itemBuilder(context, option, index);
+        content = widget.itemBuilder!(context, option, index);
       } else {
         content = Container(
             alignment: Alignment.center,
@@ -108,7 +108,7 @@ class _ScrollOptionViewState extends State<ScrollOptionView> {
           _activeIndex = index;
         });
         if (widget.onOptionChanged != null) {
-          widget.onOptionChanged(context, option, index);
+          widget.onOptionChanged!(context, option, index);
         }
       },
     );

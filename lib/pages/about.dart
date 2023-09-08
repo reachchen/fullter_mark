@@ -88,7 +88,7 @@ class AboutPage extends StatelessWidget{
                       ),
                       onPressed: () async{
                         await NetworkClient.instance().uploadList(todoList.list, userKey);
-                        // await LoginCenter.instance().logout();
+                        await LoginCenter.instance().logout();
                         Navigator.of(context).pushReplacementNamed(LOGIN_PAGE_URL);
                       },
                     ),

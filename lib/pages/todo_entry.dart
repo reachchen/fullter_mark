@@ -120,9 +120,9 @@ class _TodoEntryPageState extends State<TodoEntryPage> with WidgetsBindingObserv
 
     pages = <Widget>[
       TodoListPage(todoList: todoList),
-      CalendarPage(),
+      CalendarPage(todoList),
       Container(),
-      ReporterPage(),
+      ReporterPage(todoList: todoList),
       AboutPage(todoList: todoList,userKey: userKey),
     ];
 
