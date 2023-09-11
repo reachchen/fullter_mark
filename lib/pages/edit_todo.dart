@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_0/component/date_field_group.dart';
 import 'package:flutter_application_0/component/label_group.dart';
+import 'package:flutter_application_0/component/location_filed_group.dart';
 import 'package:flutter_application_0/component/prority_filed_group.dart';
 import 'package:flutter_application_0/component/time_filed_group.dart';
 import 'package:flutter_application_0/const/route_argument.dart';
+import 'package:flutter_application_0/const/route_url.dart';
 import 'package:flutter_application_0/extension/date_time.dart';
 import 'package:flutter_application_0/extension/time_of_day.dart';
 import 'package:flutter_application_0/model/todo.dart';
@@ -40,7 +42,7 @@ class _EditTodoPageState extends State<EditTodoPage>{
   final TextEditingController _dateTextEditingController = TextEditingController();
   final TextEditingController _startTimeTextEditingController = TextEditingController();
   final TextEditingController _endTimeTextEditingController = TextEditingController();
-
+  final TextEditingController _locationTextEditingController = TextEditingController();
 
 
   @override
@@ -65,7 +67,7 @@ class _EditTodoPageState extends State<EditTodoPage>{
     _dateTextEditingController.text = _todo!.date.toString();
     _startTimeTextEditingController.text = _todo!.startTime.timeString;
     _endTimeTextEditingController.text = _todo!.endTime.timeString;
-    
+    _locationTextEditingController.text = _todo!.location.description;
     
   }
 
@@ -170,6 +172,14 @@ class _EditTodoPageState extends State<EditTodoPage>{
                 _buildPriorityFormField(
                   '优先级',
                 ),
+                _buildLocationFormField(
+                  '位置','点击以保存当前位置',
+                  controller: _locationTextEditingController,
+                  onSaved:(Location location){
+                    _todo!.location = location;
+                    _locationTextEditingController.text = location!.description;
+                  },
+                )
               ],
 
             ),),
@@ -190,7 +200,7 @@ class _EditTodoPageState extends State<EditTodoPage>{
       },
       onSaved: onSaved,
       textInputAction: TextInputAction.done,
-      maxLength: maxLines,
+      maxLines: maxLines,
       initialValue: initiaValue,
       decoration: InputDecoration(hintText: hintText,enabledBorder: _textFormBorder),
     ), padding: _labelPadding);
@@ -294,6 +304,36 @@ class _EditTodoPageState extends State<EditTodoPage>{
         ),
       ),
     );
+  }
+
+  Widget _buildLocationFormField(
+    String title,
+    String hintText,{
+    TextEditingController? controller,
+    required Function(Location) onSaved,
+    }){
+      return LabelGroup(
+        labelText: title, 
+        labelStyle: _labelTextStyle,
+        child: GestureDetector(
+          child: LocationFieldGroup(
+            onChange: onSaved,
+            child: TextFormField(
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.done,
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: hintText,
+                enabledBorder: _textFormBorder,
+              ),
+            ), 
+          ),
+          onLongPress: (){
+            Navigator.of(context).pushNamed(LOCATION_DETAIL_PAGE_URL,
+            arguments: LocationDetailArgument(_todo!.location),);
+          },
+        ),
+      );
   }
 
   void _edit() {
