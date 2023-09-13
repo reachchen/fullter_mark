@@ -5,6 +5,7 @@ import 'package:flutter_application_0/const/route_url.dart';
 import 'package:flutter_application_0/extension/date_time.dart';
 import 'package:flutter_application_0/model/todo.dart';
 import 'package:flutter_application_0/model/todo_list.dart';
+import 'package:provider/provider.dart';
 
 class CalendarPage extends StatefulWidget{
 
@@ -31,9 +32,11 @@ class _CalendarPageState extends State<CalendarPage>{
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    // _todoList = context.read<TodoList>();
     _todoList = widget.todoList;
+    _initDate2TodoMap();
+    _todoList!.addListener(_updateData);
     _calendarController = CalendarController();
     _initialDay = DateTime.now().dayTime;
   }
@@ -41,6 +44,8 @@ class _CalendarPageState extends State<CalendarPage>{
   @override
   void dispose() {
     super.dispose();
+    _todoList!.removeListener(_updateData);
+    _calendarController!.dispose();
   }
 
   void _updateData(){
@@ -48,6 +53,7 @@ class _CalendarPageState extends State<CalendarPage>{
     setState(() {
       _todosToShow.clear();
       _date2TodoMap.clear();
+      _initDate2TodoMap();
       
     });
 

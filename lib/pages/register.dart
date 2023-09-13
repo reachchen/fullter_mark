@@ -4,7 +4,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:flutter_application_0/const/route_url.dart';
+import 'package:flutter_application_0/component/dialog.dart';
+import 'package:flutter_application_0/const/route_url.dart';
+import 'package:flutter_application_0/const/route_argument.dart';
+import 'package:flutter_application_0/model/login_center.dart';
+import 'package:flutter_application_0/model/network_client.dart';
 
 class RegisterPage extends StatefulWidget{
 
@@ -46,6 +50,39 @@ class _RegisterPageState extends State<RegisterPage>{
   }
   void _gotoLogin(){
     Navigator.of(context).pop();
+  }
+
+  void _register() async {
+    if (!canRegister) {
+      return;
+    }
+    String email = _emailControler.text;
+    String password = _passwordControler.text;
+    showDialog(
+      context: context,
+      builder: (buildContext) => ProgressDialog(text: '请求中'),
+    );
+    String result = await NetworkClient.instance().register(
+      email,
+      password,
+      image: image,
+    );
+    Navigator.of(context).pop();
+    if (result.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => SimpleAlertDialog(
+          title: '服务器返回信息',
+          content: '注册失败，错误信息为：\n$result',
+        ),
+      );
+      return;
+    }
+    String currentUserKey = await LoginCenter.instance().login(email);
+    Navigator.of(context).pushReplacementNamed(
+      TODO_ENTRY_PAGE_URL,
+      arguments: TodoEntryArgument(currentUserKey),
+    );
   }
 
   void _getImage() async {
@@ -170,7 +207,7 @@ class _RegisterPageState extends State<RegisterPage>{
                                 bottom: 12,
                               ),
                               child: FlatButton(
-                                onPressed: canRegister ? (){} : null,
+                                onPressed: canRegister ? _register : null,
                                 child: Text('注册并登录',
                                 style: TextStyle(
                                   color: Colors.white,

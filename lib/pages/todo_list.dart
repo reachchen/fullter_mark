@@ -7,6 +7,7 @@ import 'package:flutter_application_0/model/todo_list.dart';
 import 'package:flutter_application_0/utils/generate_todo.dart';
 import 'package:flutter_application_0/component/delete_todo_dialog.dart';
 
+
 class TodoListPage extends StatefulWidget{
 
   final TodoList todoList;

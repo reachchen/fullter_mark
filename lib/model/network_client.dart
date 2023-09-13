@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:flutter_application_0/model/todo.dart';
 
 const Map<String,String> commonHeaders = {'Content-Type':'application/json'};
-final String baseUrl = Platform.isAndroid ?'http://10.0.2.2:8989':'http://localhost:8989';
+final String baseUrl = Platform.isAndroid ?'http://192.168.199.109:8989':'http://localhost:8989';
 
 class NetworkClient{
 
